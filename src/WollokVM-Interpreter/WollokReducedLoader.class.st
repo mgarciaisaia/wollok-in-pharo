@@ -9,7 +9,7 @@ WollokReducedLoader >> addBindingOfClass: aName fromString: aString in: anInterp
 
 	| anAST aWollokClass |
 	
-	anAST := WollokParser parse: aString.
+	anAST := (WollokParser parse: aString) elements first.
 	anAST attributeNamed: #source put: aString.
 
 	aWollokClass := WollokVMClass new
