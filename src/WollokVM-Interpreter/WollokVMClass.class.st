@@ -26,6 +26,16 @@ WollokVMClass >> ast: anObject [
 ]
 
 { #category : #accessing }
+WollokVMClass >> methodNamed: aMessage [
+	^ self methods detect: [ :method | method name value = aMessage ] ifNone: [ ^ nil ]
+]
+
+{ #category : #accessing }
+WollokVMClass >> methods [
+	^ast methods
+]
+
+{ #category : #accessing }
 WollokVMClass >> name [
 	^ name
 ]

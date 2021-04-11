@@ -39,6 +39,11 @@ WollokASTInterpreter >> interpretProgram: aFileNode [
 	^ lastValue	
 ]
 
+{ #category : #executing }
+WollokASTInterpreter >> lookup: aMessage on: aWollokVMClass [
+	^(aWollokVMClass methodNamed: aMessage) ifNil: [ ^ aWollokVMClass wollokSuperclass methodNamed: aMessage].
+]
+
 { #category : #bindings }
 WollokASTInterpreter >> resolve: aString [ 
 	
