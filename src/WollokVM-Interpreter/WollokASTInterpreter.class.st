@@ -2,10 +2,21 @@ Class {
 	#name : #WollokASTInterpreter,
 	#superclass : #Object,
 	#instVars : [
-		'bindings'
+		'bindings',
+		'nativeMethods'
 	],
 	#category : #'WollokVM-Interpreter'
 }
+
+{ #category : #executing }
+WollokASTInterpreter >> activateMethod: aMessage of: aWollokVMObject withArguments: arguments [
+	| method |
+	method := self lookup: aMessage inObject: aWollokVMObject.
+	
+	method isNative ifTrue: [ ^ self performNativeMethod: method inObject: aWollokVMObject withArguments: arguments ].
+	
+	self shouldBeImplemented.
+]
 
 { #category : #bindings }
 WollokASTInterpreter >> addBinding: aName value: aWollokVMClass [ 
@@ -39,10 +50,37 @@ WollokASTInterpreter >> interpretProgram: aFileNode [
 	^ lastValue	
 ]
 
+{ #category : #'as yet unclassified' }
+WollokASTInterpreter >> isFalse: aBoolean [
+	self flag: #todo. "Should receive a Wollok Boolean instead of a Pharo's"
+	^ aBoolean not
+]
+
+{ #category : #'as yet unclassified' }
+WollokASTInterpreter >> lookup: aMessage inObject: aWollokVMObject [
+	self flag: #todo. "Missing: anonymous objects, inheritance"
+	^ aWollokVMObject wollokClass methodNamed: aMessage
+]
+
+{ #category : #'as yet unclassified' }
+WollokASTInterpreter >> performNativeMethod: aWollokMethodDeclarationNode inObject: aWollokVMObject withArguments: arguments [
+	^ aWollokVMObject wollokClass performNativeMethod: aWollokMethodDeclarationNode inObject: aWollokVMObject withArguments: arguments
+]
+
 { #category : #bindings }
 WollokASTInterpreter >> resolve: aString [ 
 	
 	^ bindings at: aString
+]
+
+{ #category : #visiting }
+WollokASTInterpreter >> visitBinaryOperation: aWollokBinaryOperationNode [
+	| leftOperand rightOperand operation |
+	leftOperand := aWollokBinaryOperationNode leftOperand acceptVisitor: self.
+	rightOperand := aWollokBinaryOperationNode rightOperand acceptVisitor: self.
+	operation := aWollokBinaryOperationNode operation value.
+	
+	^ self activateMethod: operation of: leftOperand withArguments: (Array braceWith: rightOperand)
 ]
 
 { #category : #visiting }

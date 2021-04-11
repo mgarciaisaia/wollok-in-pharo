@@ -6,6 +6,12 @@ Class {
 
 { #category : #'as yet unclassified' }
 WollokReducedLoader >> addBindingOfClass: aName fromString: aString in: anInterpreter [
+	self addBindingOfClass: aName fromString: aString in: anInterpreter withNativeMethods: IdentityDictionary new
+
+]
+
+{ #category : #'as yet unclassified' }
+WollokReducedLoader >> addBindingOfClass: aName fromString: aString in: anInterpreter withNativeMethods: nativeMethods [
 
 	| anAST aWollokClass |
 	
@@ -14,7 +20,8 @@ WollokReducedLoader >> addBindingOfClass: aName fromString: aString in: anInterp
 
 	aWollokClass := WollokVMClass new
 		name: aName;
-		ast: anAST;
+		ast: anAST elements first;
+		nativeMethods: nativeMethods;
 		yourself.
 	
 	anInterpreter addBinding: aName value: aWollokClass.
@@ -22,8 +29,7 @@ WollokReducedLoader >> addBindingOfClass: aName fromString: aString in: anInterp
 
 { #category : #'as yet unclassified' }
 WollokReducedLoader >> addBindingOfClass: aName of: selector in: anInterpreter [
-
-	self addBindingOfClass: aName fromString: (self perform: selector) in: anInterpreter 
+	self addBindingOfClass: aName fromString: (self perform: selector) in: anInterpreter withNativeMethods: (self perform: selector , 'NativeMethods')
 ]
 
 { #category : #'as yet unclassified' }
@@ -79,6 +85,11 @@ WollokReducedLoader >> wollokLangBoolean [
   method negate() native
 }
 '
+]
+
+{ #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangBooleanNativeMethods [
+	^ IdentityDictionary new
 ]
 
 { #category : #'as yet unclassified' }
@@ -758,6 +769,11 @@ class Collection {
 ]
 
 { #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangCollectionNativeMethods [
+	^ IdentityDictionary new
+]
+
+{ #category : #'as yet unclassified' }
 WollokReducedLoader >> wollokLangException [
 
 ^ '/**
@@ -819,6 +835,11 @@ class Exception {
   /** Overrides the behavior to compare exceptions */
   override method ==(other) = other.className() == self.className() && other.message() == self.message()
 }'
+]
+
+{ #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangExceptionNativeMethods [
+	^ IdentityDictionary new
 ]
 
 { #category : #'as yet unclassified' }
@@ -1168,6 +1189,11 @@ class List inherits Collection {
   method withoutDuplicates() native
 
 }'
+]
+
+{ #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangListNativeMethods [
+	^ IdentityDictionary new
 ]
 
 { #category : #'as yet unclassified' }
@@ -1525,6 +1551,13 @@ class Number {
 ]
 
 { #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangNumberNativeMethods [
+	^ Dictionary new
+		at: '>' put: [ :receiver :arguments | self flag: #todo. "TODO: Return a WollokVMLiteral" receiver literalValue > arguments first literalValue ];
+		yourself
+]
+
+{ #category : #'as yet unclassified' }
 WollokReducedLoader >> wollokLangObject [
 
 ^ 'class Object {
@@ -1620,6 +1653,11 @@ WollokReducedLoader >> wollokLangObject [
 
   method doMessageNotUnderstood(messageName, parameters) native
 }'
+]
+
+{ #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangObjectNativeMethods [
+	^ IdentityDictionary new.
 ]
 
 { #category : #'as yet unclassified' }
@@ -1867,6 +1905,11 @@ class Set inherits Collection {
 
 }
 '
+]
+
+{ #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangSetNativeMethods [
+	^ IdentityDictionary new
 ]
 
 { #category : #'as yet unclassified' }
@@ -2196,4 +2239,9 @@ class String {
   }
 
 }'
+]
+
+{ #category : #'as yet unclassified' }
+WollokReducedLoader >> wollokLangStringNativeMethods [
+	^ IdentityDictionary new
 ]

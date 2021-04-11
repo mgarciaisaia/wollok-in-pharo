@@ -72,6 +72,11 @@ WollokMethodDeclarationNode >> initialize [
 	commaTokens := OrderedCollection new: 2.
 ]
 
+{ #category : #accessing }
+WollokMethodDeclarationNode >> isNative [
+	^ native value = 'native'
+]
+
 { #category : #generated }
 WollokMethodDeclarationNode >> leftParenToken [
 	^ leftParenToken
