@@ -46,9 +46,23 @@ WollokASTInterpreter >> resolve: aString [
 ]
 
 { #category : #visiting }
+WollokASTInterpreter >> visitBooleanLiteral: aWollokBooleanLiteralNode [
+
+	^ self wollokBooleanFrom: aWollokBooleanLiteralNode booleanValue
+]
+
+{ #category : #visiting }
 WollokASTInterpreter >> visitNumberLiteral: aWollokNumberLiteralNode [ 
 
 	^ self wollokNumberFrom: aWollokNumberLiteralNode numberValue
+]
+
+{ #category : #literals }
+WollokASTInterpreter >> wollokBooleanFrom: aBoolean [ 
+	^ WollokVMLiteral new
+		wollokClass: (self resolve: 'wollok.lang.Boolean');
+		literalValue: aBoolean;
+		yourself
 ]
 
 { #category : #literals }

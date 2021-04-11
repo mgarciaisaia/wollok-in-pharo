@@ -12,6 +12,11 @@ WollokBooleanLiteralNode >> acceptVisitor: anAbstractNodeVisitor [
 	^ anAbstractNodeVisitor visitBooleanLiteral: self
 ]
 
+{ #category : #accesing }
+WollokBooleanLiteralNode >> booleanValue [
+	value value = 'true'
+]
+
 { #category : #generated }
 WollokBooleanLiteralNode >> tokenVariables [
 	^ #(#value)
