@@ -51,6 +51,15 @@ WollokASTInterpreter >> resolve: aString [
 ]
 
 { #category : #visiting }
+WollokASTInterpreter >> visitBinaryOperation: aWollokBinaryOperationNode [
+	| left right operation |
+	left := aWollokBinaryOperationNode leftOperand acceptVisitor: self.
+	right := aWollokBinaryOperationNode rightOperand acceptVisitor: self.
+	operation := aWollokBinaryOperationNode operation value.
+	^ self wollokObject: left receive: operation withArguments: #( right ).
+]
+
+{ #category : #visiting }
 WollokASTInterpreter >> visitBooleanLiteral: aWollokBooleanLiteralNode [
 
 	^ self wollokBooleanFrom: aWollokBooleanLiteralNode booleanValue
@@ -77,4 +86,14 @@ WollokASTInterpreter >> wollokNumberFrom: anInteger [
 		wollokClass: (self resolve: 'wollok.lang.Number');
 		literalValue: anInteger;
 		yourself
+]
+
+{ #category : #executing }
+WollokASTInterpreter >> wollokObject: aWollokVMObject receive: aMessage withArguments: arguments [
+	| method |
+	method := self lookup: aMessage on: aWollokVMObject wollokClass.
+	
+	method isNative ifTrue: [ ^ self shouldBeImplemented ].
+
+	self shouldBeImplemented.
 ]
